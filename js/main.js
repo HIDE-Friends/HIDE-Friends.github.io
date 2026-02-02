@@ -425,6 +425,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Email Deobfuscation
+  function initEmailDeobfuscation(container = document) {
+    const emailLinks = container.querySelectorAll('.email-lnk');
+    emailLinks.forEach(link => {
+      const u = link.getAttribute('data-u');
+      const d = link.getAttribute('data-d');
+      if (u && d) {
+        const email = u + '@' + d;
+        link.href = 'mailto:' + email;
+        link.textContent = email;
+      }
+    });
+  }
+
+  // Initial call
+  initEmailDeobfuscation();
+
   window.checkServerStatus = async function() {
     const statusText = document.getElementById('serverStatusText');
     if (!statusText) return;
@@ -480,5 +497,108 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   checkServerStatus();
+  
+  // Legal Modal Logic
+  const modal = document.getElementById('legalModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  const closeBtn = document.querySelector('.close-modal');
+  const legalLinks = document.querySelectorAll('a[href="privacy-policy.html"], a[href="hide-terms-conditions.html"]');
+
+  // Handle URL parameters for automatic modal opening
+  function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const modalPage = urlParams.get('modal');
+    if (modalPage) {
+      const allowedPages = ['privacy-policy.html', 'hide-terms-conditions.html'];
+      if (allowedPages.includes(modalPage)) {
+        const title = modalPage === 'privacy-policy.html' ? 'Privacy Policy' : 'Terms & Conditions';
+        openModal(modalPage, title);
+        // Clean up URL without reloading
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }
+
+  async function openModal(url, title) {
+    if (!modal || !modalBody) return;
+    
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    modalTitle.textContent = title;
+    modalBody.innerHTML = '<div class="modal-loader"><div class="loader-spinner"></div></div>';
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to load content');
+      const html = await response.text();
+      
+      // Parse the HTML to get only the content we need (e.g., from <body> or a specific div)
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Try to find the main content div or fall back to body
+      const content = doc.querySelector('[data-custom-class="body"]') || doc.body;
+      
+      // Remove scripts and unnecessary elements from loaded content
+      const scripts = content.querySelectorAll('script, noscript, header, footer, #backToTop, .Yandex.Metrika');
+      scripts.forEach(s => s.remove());
+
+      // Remove some style attributes that might break layout
+      const elementsWithStyle = content.querySelectorAll('[style]');
+      elementsWithStyle.forEach(el => {
+        if (el.style.backgroundColor === 'white' || el.style.background === 'white') {
+          el.style.background = 'transparent';
+          el.style.backgroundColor = 'transparent';
+        }
+      });
+
+      modalBody.innerHTML = content.innerHTML;
+      initEmailDeobfuscation(modalBody);
+    } catch (error) {
+      modalBody.innerHTML = `<p style="text-align: center; color: #ef4444;">${error.message}</p>`;
+    }
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.add('closing');
+    
+    // Wait for animation to finish (0.3s matches CSS)
+    setTimeout(() => {
+      modal.style.display = 'none';
+      modal.classList.remove('closing');
+      document.body.classList.remove('modal-open');
+    }, 300);
+  }
+
+  legalLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const url = link.getAttribute('href');
+      const title = link.textContent;
+      openModal(url, title);
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  });
+
+  checkUrlParams();
+
   startAutoSlide();
 });
