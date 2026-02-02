@@ -131,63 +131,125 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let isDown = false;
+    let isScrolling = false;
+    let isAnimating = false;
+    let lastScrollPos = 0;
+    let scrollVelocity = 0;
+    let velocityTimeout;
     let startX;
     let scrollLeft;
     let autoScrollInterval;
+    let itemWidth;
 
-    // Initial position in the middle
+    function updateMetrics() {
+      const gap = parseInt(getComputedStyle(ticker).gap) || 0;
+      itemWidth = originalItems[0].offsetWidth + gap;
+    }
+
+    // Initial metrics and position
+    updateMetrics();
     const containerWidth = container.offsetWidth;
-    const itemWidth = originalItems[0].offsetWidth + parseInt(getComputedStyle(ticker).gap);
     
     // Initial scroll to the middle clone, centered
     container.scrollLeft = (itemWidth * originalItems.length) - (containerWidth / 2) + (itemWidth / 2);
 
     function snapToItem() {
+      // Don't snap if we are dragging or if there's significant inertia still happening
+      if (isDown || isScrolling || Math.abs(scrollVelocity) > 2) return;
+      
+      updateMetrics();
       const currentContainerWidth = container.offsetWidth;
       const scrollPos = container.scrollLeft;
       const index = Math.round((scrollPos + currentContainerWidth / 2 - itemWidth / 2) / itemWidth);
+      const targetLeft = (index * itemWidth) - (currentContainerWidth / 2) + (itemWidth / 2);
       
-      container.scrollTo({
-        left: (index * itemWidth) - (currentContainerWidth / 2) + (itemWidth / 2),
-        behavior: 'smooth'
-      });
+      const startLeft = container.scrollLeft;
+      const distance = targetLeft - startLeft;
+      if (Math.abs(distance) < 1) return;
+
+      const duration = 600; 
+      const startTime = performance.now();
+      isAnimating = true;
+
+      function animate(currentTime) {
+        if (isDown || isScrolling) {
+          isAnimating = false;
+          return;
+        }
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easing = 1 - Math.pow(1 - progress, 3);
+        
+        container.scrollLeft = startLeft + distance * easing;
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          isAnimating = false;
+          checkBoundary();
+        }
+      }
+
+      container.style.scrollBehavior = 'auto';
+      requestAnimationFrame(animate);
     }
 
     function checkBoundary() {
+      // Only jump when not animating and not dragging
+      if (isDown || isAnimating) return; 
+      
+      updateMetrics();
       const totalWidth = itemWidth * originalItems.length;
-      if (container.scrollLeft <= itemWidth) {
-        container.scrollLeft += totalWidth;
-      } else if (container.scrollLeft >= totalWidth * 2) {
-        container.scrollLeft -= totalWidth;
+      const currentScroll = container.scrollLeft;
+      
+      // Use a wider margin for boundary check to avoid jumps during inertia
+      if (currentScroll <= itemWidth * 0.5) {
+        container.style.scrollBehavior = 'auto';
+        container.scrollLeft = currentScroll + totalWidth;
+      } else if (currentScroll >= totalWidth * 2.5) {
+        container.style.scrollBehavior = 'auto';
+        container.scrollLeft = currentScroll - totalWidth;
       }
     }
+
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updateMetrics();
+        snapToItem();
+      }, 100);
+    });
 
     // Mouse drag support
     container.addEventListener('mousedown', (e) => {
       isDown = true;
+      isScrolling = true;
+      isAnimating = false; // Stop any snapping animation
+      stopAutoScroll();
       container.classList.add('dragging');
       startX = e.pageX - container.offsetLeft;
       scrollLeft = container.scrollLeft;
-      stopAutoScroll();
       container.style.scrollBehavior = 'auto';
     });
 
     container.addEventListener('mouseleave', () => {
       if (!isDown) return;
       isDown = false;
+      isScrolling = false;
       container.classList.remove('dragging');
-      container.style.scrollBehavior = 'smooth';
       snapToItem();
-      startAutoScroll();
+      resetAutoScroll();
     });
 
     container.addEventListener('mouseup', () => {
       if (!isDown) return;
       isDown = false;
+      isScrolling = false;
       container.classList.remove('dragging');
-      container.style.scrollBehavior = 'smooth';
       snapToItem();
-      startAutoScroll();
+      resetAutoScroll();
     });
 
     container.addEventListener('mousemove', (e) => {
@@ -196,62 +258,95 @@ document.addEventListener('DOMContentLoaded', () => {
       const x = e.pageX - container.offsetLeft;
       const walk = (x - startX) * 1.5;
       container.scrollLeft = scrollLeft - walk;
-      
-      const totalWidth = itemWidth * originalItems.length;
-      if (container.scrollLeft <= 0) {
-        container.scrollLeft = totalWidth;
-        scrollLeft = container.scrollLeft;
-        startX = x;
-      } else if (container.scrollLeft >= totalWidth * 2) {
-        container.scrollLeft = totalWidth;
-        scrollLeft = container.scrollLeft;
-        startX = x;
-      }
     });
 
     // Touch support
     container.addEventListener('touchstart', () => {
+      isScrolling = true;
+      isAnimating = false; // Stop any snapping animation
       stopAutoScroll();
       container.style.scrollBehavior = 'auto';
     }, { passive: true });
 
     let touchEndTimeout;
     container.addEventListener('touchend', () => {
-      container.style.scrollBehavior = 'smooth';
-      // Wait for native scroll to slow down before snapping
-      clearTimeout(touchEndTimeout);
-      touchEndTimeout = setTimeout(() => {
-        checkBoundary();
-        snapToItem();
-        startAutoScroll();
-      }, 150);
+      isScrolling = false;
+      // On touch end, we don't snap immediately because of inertia
+      // snapToItem will be called when velocity drops
+      resetAutoScroll();
     }, { passive: true });
 
-    // Handle the infinite jump
-    container.addEventListener('scroll', () => {
-      if (!isDown) {
-        const totalWidth = itemWidth * originalItems.length;
-        const currentContainerWidth = container.offsetWidth;
-        const centerPos = (totalWidth) - (currentContainerWidth / 2) + (itemWidth / 2);
+    // Wheel support
+    container.addEventListener('wheel', () => {
+      isScrolling = true;
+      isAnimating = false;
+      resetAutoScroll();
+      clearTimeout(container._wheelTimeout);
+      container._wheelTimeout = setTimeout(() => { 
+        isScrolling = false; 
+        snapToItem();
+      }, 200);
+    }, { passive: true });
 
-        if (container.scrollLeft <= 10) {
-          container.style.scrollBehavior = 'auto';
-          container.scrollLeft = centerPos + totalWidth;
-          container.style.scrollBehavior = 'smooth';
-        } else if (container.scrollLeft >= totalWidth * 2 + (totalWidth - currentContainerWidth)) {
-          container.style.scrollBehavior = 'auto';
-          container.scrollLeft = centerPos;
-          container.style.scrollBehavior = 'smooth';
-        }
+    // Monitor scroll velocity and handle boundary
+    container.addEventListener('scroll', () => {
+      resetAutoScroll();
+      
+      const currentPos = container.scrollLeft;
+      scrollVelocity = currentPos - lastScrollPos;
+      lastScrollPos = currentPos;
+
+      // Only check boundary if not actively animating
+      if (!isAnimating) {
+        checkBoundary();
+      }
+
+      // If user stopped scrolling (including inertia), snap to item
+      if (!isDown && !isAnimating) {
+        clearTimeout(velocityTimeout);
+        velocityTimeout = setTimeout(() => {
+          if (Math.abs(scrollVelocity) < 0.1) {
+            scrollVelocity = 0;
+            snapToItem();
+          }
+        }, 100);
       }
     }, { passive: true });
 
     // Auto-scroll logic
+    let autoScrollRestartTimeout;
     function startAutoScroll() {
       stopAutoScroll();
       autoScrollInterval = setInterval(() => {
-        if (isDown) return;
-        container.scrollBy({ left: itemWidth, behavior: 'smooth' });
+        if (isDown || isScrolling || isAnimating) return; // Completely skip if anything else is happening
+        updateMetrics();
+        
+        const startLeft = container.scrollLeft;
+        const duration = 800; 
+        const startTime = performance.now();
+        isAnimating = true;
+
+        function animateAuto(currentTime) {
+          if (isDown || isScrolling) {
+            isAnimating = false;
+            return;
+          }
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easing = 1 - Math.pow(1 - progress, 3);
+          
+          container.scrollLeft = startLeft + (itemWidth * easing);
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateAuto);
+          } else {
+            isAnimating = false;
+            checkBoundary();
+          }
+        }
+
+        container.style.scrollBehavior = 'auto';
+        requestAnimationFrame(animateAuto);
       }, 3000);
     }
 
@@ -260,6 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(autoScrollInterval);
         autoScrollInterval = null;
       }
+      if (autoScrollRestartTimeout) {
+        clearTimeout(autoScrollRestartTimeout);
+        autoScrollRestartTimeout = null;
+      }
+    }
+
+    function resetAutoScroll() {
+      stopAutoScroll();
+      autoScrollRestartTimeout = setTimeout(startAutoScroll, 3000);
     }
 
     // Pause on hover

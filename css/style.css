@@ -566,6 +566,7 @@ h1 {
 .features-ticker-container.dragging,
 .reviews-ticker-container.dragging {
   cursor: grabbing;
+  scroll-behavior: auto;
 }
 
 /* Hide scrollbar */
@@ -589,8 +590,33 @@ h1 {
   padding: 0 2rem; /* Reduced from 15% to allow infinite flow */
 }
 
-.features-ticker .feature-card {
+@media (max-width: 480px) {
+  .features-ticker {
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+  
+  .features-ticker .feature-card {
+    width: 280px;
+    max-width: calc(100vw - 32px);
+  }
+
+  .feature-card {
+    padding: 1.5rem;
+  }
+
+  .feature-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+}
+
+.feature-card {
   width: 300px;
+  max-width: 80vw;
   flex-shrink: 0;
 }
 
@@ -668,7 +694,7 @@ h1 {
 
 /* Stats Section */
 .stats-section {
-  padding: 2rem 0.5rem;
+  padding: 2rem 1rem;
   background: var(--card-bg);
   border-radius: 2rem;
   margin-top: var(--section-spacing);
@@ -684,13 +710,59 @@ h1 {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0.5rem;
   display: flex;
-  flex-wrap: nowrap; /* Prevent wrapping to keep in one line */
+  flex-wrap: nowrap;
   justify-content: space-evenly;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 1rem;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .stats-section {
+    padding: 1.5rem;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+  }
+  
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem 10px;
+  }
+
+  .stat-item:nth-child(4),
+  .stat-item:nth-child(5) {
+    grid-column: span 1.5;
+  }
+  
+  /* If 5 items, center the last row */
+  .stats-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .stat-item {
+    grid-column: span 2;
+  }
+  .stat-item:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+  .stat-item:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-section {
+    padding: 1.25rem 1rem;
+  }
+  .stat-number {
+    font-size: 1.2rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+  }
 }
 
 .stat-item {
@@ -720,8 +792,7 @@ h1 {
   letter-spacing: 0.2px;
   line-height: 1.2;
   width: 100%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  white-space: nowrap;
 }
 
 /* Community Section */
@@ -881,12 +952,13 @@ h1 {
   overflow-x: auto;
   overflow-y: hidden;
   width: 100%;
-  padding: 20px 0;
+  padding: 40px 0;
   position: relative;
   -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  cursor: grab;
 }
 
 .reviews-ticker {
@@ -910,7 +982,25 @@ h1 {
   }
   
   .reviews-ticker > .review-card {
-    max-width: 90vw;
+    width: 280px;
+    max-width: calc(100vw - 32px);
+  }
+
+  .review-card {
+    padding: 1.25rem;
+  }
+
+  .review-author-row {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .review-author {
+    font-size: 1rem;
+  }
+
+  .review-text {
+    font-size: 0.85rem;
   }
 }
 
