@@ -3,231 +3,394 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>H.I.D.E. Friends</title>
+  <title>H.I.D.E. Friends - Online Hide and Seek Game</title>
+  <meta name="description" content="Play H.I.D.E. Friends - a fun pixel hide-and-seek online game with friends. Join the community on Discord and Telegram!">
+  <meta name="keywords" content="HIDE game, hide and seek online, pixel game, multiplayer game, H.I.D.E. Friends">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hide-friends.github.io/">
+  <meta property="og:title" content="H.I.D.E. Friends - Online Hide and Seek">
+  <meta property="og:description" content="Fun pixel hide-and-seek online with friends!">
+  <meta property="og:image" content="512i.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://hide-friends.github.io/">
+  <meta property="twitter:title" content="H.I.D.E. Friends - Online Hide and Seek">
+  <meta property="twitter:description" content="Fun pixel hide-and-seek online with friends!">
+  <meta property="twitter:image" content="512i.png">
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="512i.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #f5f7ff 0%, #e8ecff 100%);
-      color: #2c2c54;
-      line-height: 1.6;
-    }
-
-    header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 20px;
-      margin: 0 auto 1rem;
-      background: #4a6cf7 url('512i.png') center / cover no-repeat;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      font-size: 2.4rem;
-      margin-bottom: 1.2rem;
-      color: #2d3748;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.8rem 1.4rem;
-      border-radius: 12px;
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      opacity: 0.95;
-    }
-
-    .btn-discord { background: #5865F2; }
-    .btn-telegram { background: #0088cc; }
-    .btn-email { background: #d44638; }
-    .btn-google { background: #4285F4; }
-    .btn-appstore { background: #000000; }
-
-    .carousel {
-      max-width: 800px;
-      margin: 2rem auto;
-      position: relative;
-      overflow: hidden;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    }
-
-    .slides {
-      display: flex;
-      transition: transform 0.5s ease-in-out;
-      height: 450px;
-    }
-
-    .slide {
-      min-width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .controls {
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.6);
-      cursor: pointer;
-    }
-
-    .dot.active {
-      background: white;
-    }
-
-    .description {
-      text-align: center;
-      max-width: 800px;
-      margin: 2rem auto;
-      font-size: 1.3rem;
-      color: #4a5568;
-    }
-
-    .store-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-      margin: 1.5rem 0;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: #718096;
-      font-size: 0.9rem;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="social-floating-bar" id="floatingSocialBar">
+    <!-- Will be populated by JS -->
+  </div>
 
   <header>
-    <div class="logo"></div>
-    <h1>H.I.D.E. Friends</h1>
-    <div class="social-links">
-      <a href="https://discord.gg/Gp9cfwhq" target="_blank" class="btn btn-discord">
-        <i class="fab fa-discord"></i> Discord
-      </a>
-      <a href="https://t.me/hidehelp" target="_blank" class="btn btn-telegram">
-        <i class="fab fa-telegram"></i> Telegram
-      </a>
-      <a href="https://hide.freshdesk.com/support/home" target="_blank" class="btn btn-email">
-        <i class="fas fa-envelope"></i> Support Page
-      </a>
+    <div class="header-container">
+      <div class="header-left">
+        <div class="social-links" id="headerSocialLinks">
+          <!-- Will be populated by JS -->
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="logo-group">
+          <div class="logo"></div>
+          <h1>H.I.D.E. Friends</h1>
+        </div>
+        <div class="server-status" id="serverStatus">
+          <div class="status-item" id="server-status">
+            <div class="status-dot"></div>
+            <span data-i18n="server_status_label">Data Server:</span> <span id="serverStatusText" data-i18n="checking">Checking...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="lang-switcher">
+          <button class="lang-btn">EN</button>
+          <button class="lang-btn">RU</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div class="carousel">
-    <div class="slides" id="slides">
-      <div class="slide" style="background-image: url('1.png')"></div>
-      <div class="slide" style="background-image: url('2.png')"></div>
-      <div class="slide" style="background-image: url('3.png')"></div>
-      <div class="slide" style="background-image: url('4.png')"></div>
-      <div class="slide" style="background-image: url('5.png')"></div>
-      <div class="slide" style="background-image: url('6.png')"></div>
+  <div class="main-container">
+    <div class="carousel" id="screenshots">
+      <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+      <button class="carousel-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+      <div class="slides" id="slides">
+        <div class="slide"><img src="img/1.png" alt="Screenshot 1"></div>
+        <div class="slide"><img src="img/2.png" alt="Screenshot 2"></div>
+        <div class="slide"><img src="img/3.png" alt="Screenshot 3"></div>
+        <div class="slide"><img src="img/4.png" alt="Screenshot 4"></div>
+        <div class="slide"><img src="img/5.png" alt="Screenshot 5"></div>
+      </div>
+      <div class="controls">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+        <span class="dot" data-index="3"></span>
+        <span class="dot" data-index="4"></span>
+      </div>
     </div>
-    <div class="controls" id="dots">
-      <span class="dot active" data-index="0"></span>
-      <span class="dot" data-index="1"></span>
-      <span class="dot" data-index="2"></span>
-      <span class="dot" data-index="3"></span>
-      <span class="dot" data-index="4"></span>
-      <span class="dot" data-index="5"></span>
+
+    <div id="about" class="description" data-i18n="description">
+      Fun pixel hide-and-seek online with friends!
     </div>
-  </div>
 
-  <div class="description">
-    Fun pixel hide-and-seek online with friends!
-  </div>
+    <div class="video-section reveal">
+      <h2 class="section-title" data-i18n="watch_gameplay">Watch Gameplay</h2>
+      <div class="video-container">
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/f593CfI5ifY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
 
-  <div class="store-buttons">
-    <a href="https://h-i-d-e.en.uptodown.com/android" title="Download H.I.D.E." > 
-                 <img src="https://stc.utdstc.com/img/mediakit/download-gio-big.png" alt="Download H.I.D.E."> 
-                 </a> 
-    <a href="#" target="_blank" class="btn btn-google">
-      <i class="fab fa-google-play"></i> Coming Soon
-    </a>
-    <a href="https://apps.apple.com/us/app/h-i-d-e-hide-or-seek-online/id1436151665" target="_blank" class="btn btn-appstore">
-      <i class="fab fa-app-store"></i> App Store
-    </a>
+    <h2 class="section-title reveal" data-i18n="game_features">Game Features</h2>
+    <div class="features-ticker-container reveal">
+      <div class="features-ticker">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <h3 data-i18n="multiplayer_title">Multiplayer</h3>
+          <p data-i18n="multiplayer_desc">Play online with friends or players from all over the world in real-time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+          <h3 data-i18n="maps_title">Unique Maps</h3>
+          <p data-i18n="maps_desc">Explore various pixel-art maps with many hiding spots and secrets.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-paint-brush"></i></div>
+          <h3 data-i18n="custom_title">Customization</h3>
+          <p data-i18n="custom_desc">Unlock cool skins and customize your character to stand out.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+          <h3 data-i18n="rank_title">Leagues</h3>
+          <p data-i18n="rank_desc">Battle every 3 days with 50 players in your league (Paper, Wood, Bronze, Silver, Gold)!</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-cube"></i></div>
+          <h3 data-i18n="physics_title">Physics</h3>
+          <p data-i18n="physics_desc">Interact with the world! Every Prop can be knocked over or moved.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-user-friends"></i></div>
+          <h3 data-i18n="friends_title">Friends</h3>
+          <p data-i18n="friends_desc">Add friends and play together in any match.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-door-open"></i></div>
+          <h3 data-i18n="rooms_title">Custom Rooms</h3>
+          <p data-i18n="rooms_desc">Create private rooms with your own rules and invite friends.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="stats-section reveal">
+      <div class="stats-container">
+        <div class="stat-item">
+          <div class="stat-number" data-target="10000000">0</div>
+          <div class="stat-label" data-i18n="downloads">Downloads</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="4.6" data-decimals="1">0</div>
+          <div class="stat-label" data-i18n="rating">Rating</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="50000">0</div>
+          <div class="stat-label" data-i18n="reviews">Reviews</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="20">0</div>
+          <div class="stat-label" data-i18n="unique_maps">Unique Maps</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number date-text">11.09.2018</div>
+          <div class="stat-label" data-i18n="release_date">Release Date</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-section">
+      <h2 class="section-title reveal" data-i18n="join_community">Join Our Community</h2>
+      <div class="community-grid reveal">
+        <a href="https://discord.gg/Gp9cfwhq" target="_blank" class="community-card card-discord">
+          <i class="fab fa-discord main-icon"></i>
+          <i class="fab fa-discord bg-icon"></i>
+          <h3 data-i18n="discord">Discord</h3>
+          <p data-i18n="discord_desc">Chat with players and developers</p>
+        </a>
+        <a href="https://t.me/hidehelp" target="_blank" class="community-card card-telegram">
+          <i class="fab fa-telegram main-icon"></i>
+          <i class="fab fa-telegram bg-icon"></i>
+          <h3 data-i18n="telegram">Telegram</h3>
+          <p data-i18n="telegram_desc">Get instant updates and support</p>
+        </a>
+      </div>
+    </section>
+
+    <h2 class="section-title reveal" data-i18n="what_players_say">What Players Say</h2>
+    <div class="reviews-ticker-container reveal">
+      <div class="reviews-ticker">
+        <div class="review-card">
+          <div class="review-header">
+            <img src="img/27818264.png" alt="27818264" class="review-avatar" onerror="this.src='https://ui-avatars.com/api/?name=B&background=4a6cf7&color=fff'">
+            <div class="review-meta">
+              <div class="review-author-row">
+                <span class="review-author" data-i18n="review_name1">Blu2820</span>
+                <span class="player-id">ID: 27818264</span>
+              </div>
+              <div class="review-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="review-text" data-i18n="review_text1">"Basically, the game is 5 out of 5. Of course, beginners will have to guard the low tab because of the mops, but you just need to get a grenade and a weapon and you'll have a chance. But it's also fun to grind XP with friends without the developer knowing using the Medic perk. I recommend this game to everyone (die to a mop with the nickname INVICTUS)."</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <img src="img/2005.png" alt="2005" class="review-avatar" onerror="this.src='https://ui-avatars.com/api/?name=I&background=4a6cf7&color=fff'">
+            <div class="review-meta">
+              <div class="review-author-row">
+                <span class="review-author" data-i18n="review_name2">INVICTUS</span>
+                <span class="player-id">ID: 2005</span>
+              </div>
+              <div class="review-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="review-text" data-i18n="review_text2">"Hunters vs Props is a fast-paced, creative, and incredibly fun game of hide-and-seek. With simple rules, dynamic maps, and hilarious moments, it offers great replayability, and now you can add friends."</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <img src="https://ui-avatars.com/api/?name=D&background=4a6cf7&color=fff" alt="Developer" class="review-avatar">
+            <div class="review-meta">
+              <div class="review-author-row">
+                <span class="review-author" data-i18n="review_name3">DEVELOPER</span>
+                <span class="player-id">ID: 1</span>
+              </div>
+              <div class="review-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="review-text" data-i18n="review_text3">"Best game, there is much that can still be improved, but players like it. We ban cheaters."</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="faq" class="section-title reveal" data-i18n="faq_title">Frequently Asked Questions</h2>
+    <div class="faq-section reveal">
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q1">How do I play as a Prop?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a1">As a Prop, you can transform into any object you find on the map. Your goal is to hide and survive until the timer runs out!</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q2">Is the game free to play?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a2">Yes, H.I.D.E. Friends is free to download and play on all supported platforms.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q3">Can I play with my friends?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a3">Absolutely! You can join the same server or create a private room to play with your friends.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q4">Why do I lose health when shooting as a Hunter?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a4">Hunters lose health if they shoot at objects that are not players. Be careful and only shoot when you are sure it's a Prop!</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q5">What should I do if the game freezes or crashes?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a5">Make sure you have a stable internet connection. If the problem persists, try clearing the game cache or reinstalling the app.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q6">Is an internet connection required?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a6">Yes, H.I.D.E. is an online multiplayer game and requires a stable Wi-Fi or mobile data connection.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span data-i18n="faq_q7">How to disable ads?</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a7">Ads after a round can be disabled by making any purchase in the store. Reward-based ad buttons cannot be disabled, but you can simply choose not to click them.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section reveal">
+      <h2 data-i18n="ready_title">Ready to Hide or Seek?</h2>
+      <p data-i18n="ready_desc">Join millions of players and start your adventure today!</p>
+      <div class="cta-buttons">
+        <a href="https://h-i-d-e.en.uptodown.com/android" target="_blank" class="btn btn-white" id="mainDownloadBtn">
+          <i class="fas fa-download"></i> <span data-i18n="download_now">Download Now</span>
+        </a>
+      </div>
+    </div>
+
+    <h2 class="section-title reveal" data-i18n="download_now">Download Now</h2>
+    <div class="store-badges reveal">
+      <a href="https://h-i-d-e.en.uptodown.com/android" class="store-badge" target="_blank">
+        <i class="fab fa-android"></i>
+        <div class="store-badge-text">
+          <span class="store-badge-small">Get it on</span>
+          <span class="store-badge-large">Uptodown</span>
+        </div>
+      </a>
+      <div class="store-badge coming-soon" style="opacity: 0.7; cursor: default;">
+        <i class="fab fa-google-play"></i>
+        <div class="store-badge-text">
+          <span class="store-badge-small">Google Play</span>
+          <span class="store-badge-large">Coming Soon</span>
+        </div>
+      </div>
+      <a href="https://apps.apple.com/us/app/h-i-d-e-hide-or-seek-online/id1436151665" class="store-badge" target="_blank">
+        <i class="fab fa-apple"></i>
+        <div class="store-badge-text">
+          <span class="store-badge-small">Download on the</span>
+          <span class="store-badge-large">App Store</span>
+        </div>
+      </a>
+    </div>
   </div>
 
   <footer>
-    &copy; 2025 H.I.D.E. Friends. All rights reserved.
+    <div class="container">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h4 data-i18n="about_title">About H.I.D.E.</h4>
+        <p style="color: var(--subtitle-color); line-height: 1.6;" data-i18n="about_desc">
+          The ultimate hide-and-seek experience on mobile. Join millions of players worldwide in this thrilling pixel-art multiplayer game.
+        </p>
+      </div>
+      <div class="footer-column">
+        <h4 data-i18n="quick_links">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#about" data-i18n="about_game">About Game</a></li>
+          <li><a href="#screenshots" data-i18n="screenshots">Screenshots</a></li>
+          <li><a href="#faq" data-i18n="faq">FAQ</a></li>
+          <li><a href="#server-status" data-i18n="server_status">Server Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4 data-i18n="legal">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="privacy-policy.html" data-i18n="privacy">Privacy Policy</a></li>
+          <li><a href="hide-terms-conditions.html" data-i18n="terms">Terms & Conditions</a></li>
+          <li><a href="https://hide.freshdesk.com/support/home" target="_blank" data-i18n="support">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4 data-i18n="social">Social</h4>
+        <p style="color: var(--subtitle-color); font-size: 0.9rem; margin-bottom: 1rem;" data-i18n="social_desc">
+          Follow us on social media for the latest updates.
+        </p>
+        <div class="social-links footer-social-links">
+          <!-- Will be populated by JS -->
+        </div>
+      </div>
+    </div>
+      <div class="footer-bottom">
+        &copy; 2026 <span data-i18n="rights">Hand Games. All rights reserved.</span>
+      </div>
+    </div>
   </footer>
- <script> 
+
+  <button id="backToTop" data-i18n-title="go_to_top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/main.js"></script>
+  <script> 
  	window.fwSettings={ 
  	'widget_id':70000001011 
  	}; 
  	!function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()  
  </script> 
  <script type='text/javascript' src='https://widget.freshworks.com/widgets/70000001011.js' async defer></script>
-</body>
-
-  <script>
-    const slides = document.getElementById('slides');
-    const dots = document.querySelectorAll('.dot');
-    let currentIndex = 0;
-    const totalSlides = dots.length;
-
-    function showSlide(index) {
-      if (index >= totalSlides) index = 0;
-      if (index < 0) index = totalSlides - 1;
-      currentIndex = index;
-      slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentIndex);
-      });
-    }
-
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => showSlide(parseInt(dot.dataset.index)));
-    });
-
-    setInterval(() => showSlide(currentIndex + 1), 5000);
-  </script>
-
 </body>
 </html>
