@@ -45,6 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   populateSocialLinks();
 
+  // System Theme Detection & Management
+  function initTheme() {
+    const theme = localStorage.getItem('theme');
+    if (theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }
+  initTheme();
+
   // Header Scroll Animation
   const header = document.querySelector('header');
   let isScrolled = false;
