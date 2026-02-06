@@ -4,6 +4,7 @@ window.translations = {
   review_name2: "INVICTUS",
   review_name3: "DEVELOPER",
   review_name4: "XD",
+  game_name: "H.I.D.E.",
   discord: "Discord",
   telegram: "Telegram",
   youtube: "YouTube",
@@ -149,8 +150,8 @@ window.translations = {
     ru: "Игра бесплатная?"
   },
   faq_a2: {
-    en: "Yes, H.I.D.E. Friends is free to download and play on all supported platforms.",
-    ru: "Да, H.I.D.E. Friends бесплатна для загрузки и игры на всех поддерживаемых платформах."
+    en: "Yes, H.I.D.E. is free to download and play on all supported platforms.",
+    ru: "Да, H.I.D.E. бесплатна для загрузки и игры на всех поддерживаемых платформах."
   },
   faq_q3: {
     en: "Can I play with my friends?",
@@ -320,7 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = el.getAttribute('data-i18n-title');
       const translation = window.translations[key];
       if (translation) {
-        el.title = typeof translation === 'string' ? translation : (translation[lang] || translation['en']);
+        const text = typeof translation === 'string' ? translation : (translation[lang] || translation['en']);
+        el.title = text;
+        el.setAttribute('aria-label', text);
       }
     });
 

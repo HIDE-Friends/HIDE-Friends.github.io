@@ -563,23 +563,32 @@ h1 {
 }
 
 /* Features Ticker Section */
-.features-ticker-container {
-  overflow-x: auto; /* Allow manual scroll */
+.features-ticker-container,
+.reviews-ticker-container {
+  overflow-x: auto;
   overflow-y: hidden;
   width: 100%;
   padding: 20px 0;
   position: relative;
   -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+  -webkit-overflow-scrolling: touch;
   cursor: grab;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 }
 
 .features-ticker-container.dragging,
 .reviews-ticker-container.dragging {
   cursor: grabbing;
+  scroll-snap-type: none;
   scroll-behavior: auto;
+}
+
+.feature-card,
+.review-card {
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
 }
 
 /* Hide scrollbar */
