@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ticker) return;
 
     const originalItems = Array.from(ticker.children);
+    // Клонируем элементы: [Clone Set 1] [Original Set] [Clone Set 2]
     originalItems.forEach(item => { ticker.appendChild(item.cloneNode(true)); });
     originalItems.forEach(item => { ticker.prepend(item.cloneNode(true)); });
 
@@ -143,21 +144,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateMetrics();
-    container.scrollLeft = (itemWidth * originalItems.length) - (container.offsetWidth / 2) + (itemWidth / 2);
+    const totalWidth = itemWidth * originalItems.length;
+    // Устанавливаем скролл в начало оригинального блока (посередине)
+    container.scrollLeft = totalWidth;
 
     function checkBoundary() {
-      updateMetrics();
-      const totalWidth = itemWidth * originalItems.length;
+      if (isDown) return; // Не телепортируем во время перетаскивания
+      
       const currentScroll = container.scrollLeft;
       
-      if (currentScroll <= itemWidth * 0.5) {
+      // Если ушли слишком влево (в первый блок клонов)
+      if (currentScroll <= 0) {
         container.style.scrollBehavior = 'auto';
-        container.scrollLeft = currentScroll + totalWidth;
-        container.style.scrollBehavior = 'smooth';
-      } else if (currentScroll >= totalWidth * 2.5 - 10) {
+        container.scrollLeft = totalWidth;
+      } 
+      // Если дошли до конца (в блок вторых клонов)
+      else if (currentScroll >= totalWidth * 2) {
         container.style.scrollBehavior = 'auto';
-        container.scrollLeft = currentScroll - totalWidth;
-        container.style.scrollBehavior = 'smooth';
+        container.scrollLeft = totalWidth;
       }
     }
 
@@ -209,6 +213,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDown) return;
         updateMetrics();
         const currentScroll = container.scrollLeft;
+        const totalWidth = itemWidth * originalItems.length;
+
+        // Если автопрокрутка дошла до конца второго блока клонов
+        if (currentScroll >= totalWidth * 2 - container.offsetWidth) {
+          container.style.scrollBehavior = 'auto';
+          container.scrollLeft = totalWidth;
+          // Даем один кадр на "тихий" прыжок
+          requestAnimationFrame(() => {
+            const targetScroll = totalWidth + itemWidth - (container.offsetWidth / 2) + (itemWidth / 2);
+            container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+          });
+          return;
+        }
+
         const currentIndex = Math.round((currentScroll + container.offsetWidth / 2 - itemWidth / 2) / itemWidth);
         const targetScroll = ((currentIndex + 1) * itemWidth) - (container.offsetWidth / 2) + (itemWidth / 2);
         
