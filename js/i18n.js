@@ -4,6 +4,7 @@ window.translations = {
   review_name2: "INVICTUS",
   review_name3: "DEVELOPER",
   review_name4: "XD",
+  review_name5: "GlitchGuy",
   game_name: "H.I.D.E.",
   discord: "Discord",
   telegram: "Telegram",
@@ -132,6 +133,10 @@ window.translations = {
   review_text4: {
     en: '"Hunters vs props is a fast paced, chaotic, and extremely fun game. It offers smooth controls, great mechanics, various maps and loads of replay value. Every match feels exciting, especially when playing with friends. Its easy to jump into and hard to put down. Hands down, its an amazing game. Really enjoying it so far and looking forward to future updates. Best regards, XD🫡"',
     ru: '"Hunters vs props — это быстрая, хаотичная и невероятно веселая игра. В ней плавное управление, отличная механика, разнообразные карты и огромный потенциал для повторных прохождений. Каждый матч захватывает, особенно при игре с друзьями. В неё легко втянуться и трудно оторваться. Без преувеличения, потрясающая игра. Наслаждаюсь процессом и с нетерпением жду обновлений. С наилучшими пожеланиями, XD🫡"'
+  },
+  review_text5: {
+    en: '"It\'s good"',
+    ru: '"Это хорошо"'
   },
   faq_title: {
     en: "Frequently Asked Questions",

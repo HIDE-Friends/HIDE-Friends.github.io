@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainBtn = document.getElementById('mainDownloadBtn');
     if (!mainBtn) return;
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const androidUrl = "https://h-i-d-e.en.uptodown.com/android";
+    const androidUrl = "https://play.google.com/store/apps/details?id=com.hgames.propvshunter";
     const iosUrl = "https://apps.apple.com/us/app/h-i-d-e-hide-or-seek-online/id1436151665";
     
     if (/android/i.test(userAgent)) {
