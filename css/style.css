@@ -94,7 +94,7 @@ header.scrolled .header-container {
 }
 
 .main-container {
-  padding-top: 240px; /* Offset for expanded header + section-spacing */
+  padding-top: 230px; /* Full expanded header height + safety margin */
 }
 
 .header-container {
@@ -226,6 +226,16 @@ header.scrolled .theme-toggle {
 header.scrolled .lang-btn {
   padding: 4px 10px;
   font-size: 0.8rem;
+}
+
+header .btn-download {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+}
+
+header.scrolled .btn-download {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.7rem;
 }
 
 header .social-links {
@@ -402,6 +412,7 @@ h1 {
 .btn-google { background: #4285F4; }
 .btn-appstore { background: #1a1a1a; }
 .btn-uptodown { background: #1b1b1b; }
+.btn-download { background: #4a6cf7; font-size: 0.9rem; padding: 0.5rem 1rem; }
 .btn-disabled { 
   background: #cbd5e0; 
   color: #718096;
@@ -911,7 +922,7 @@ h1 {
   }
 
   .main-container {
-    padding-top: 160px; /* Offset for mobile header + section-spacing */
+    padding-top: 190px; /* Offset for mobile expanded header */
   }
 
   .header-center {
@@ -962,6 +973,15 @@ h1 {
 
   header.scrolled h1 {
     font-size: 0.95rem;
+  }
+
+  header .header-right {
+    gap: 8px;
+  }
+
+  header .btn-download {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.7rem;
   }
 
   .community-grid {

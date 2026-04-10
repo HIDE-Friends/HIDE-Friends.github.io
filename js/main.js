@@ -316,6 +316,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const backToTop = document.getElementById('backToTop');
   const progressBar = document.getElementById('progressBar');
   const reveals = document.querySelectorAll('.reveal');
+  
+  function checkReveals() {
+    reveals.forEach(reveal => {
+      if (reveal.getBoundingClientRect().top < window.innerHeight - 150) {
+        reveal.classList.add('active');
+      }
+    });
+  }
+  
+  // Check on load for elements visible without scroll
+  setTimeout(() => {
+    checkReveals();
+    // Second check after images/carousel might have loaded
+    setTimeout(checkReveals, 300);
+  }, 50);
+  
   window.addEventListener('scroll', () => {
     const winScroll = document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
