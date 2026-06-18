@@ -184,7 +184,7 @@
     <section class="community-section">
       <h2 class="section-title reveal" data-i18n="join_community">Join Our Community</h2>
       <div class="community-grid reveal">
-        <a href="https://discord.gg/Gp9cfwhq" target="_blank" class="community-card card-discord">
+        <a href="https://discord.gg/6VrpRzaRSy" target="_blank" class="community-card card-discord">
           <i class="fab fa-discord main-icon"></i>
           <i class="fab fa-discord bg-icon"></i>
           <h3 data-i18n="discord">Discord</h3>
@@ -347,6 +347,35 @@
       </div>
     </div>
 
+    <h2 id="contact" class="section-title reveal" data-i18n="contact_title">Contact Us</h2>
+    <div class="contact-section reveal">
+      <form id="contactForm" action="https://formsubmit.co/hide_help@mail.ru" method="POST" class="contact-form">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://hide-friends.github.io/#contact">
+        <input type="hidden" name="_subject" id="subjectField" value="Hide Support Form">
+        <input type="text" name="_honey" style="display:none">
+        <div class="form-group">
+          <input type="text" name="nickname" class="form-input" data-i18n="contact_nickname" placeholder="Your Nickname">
+        </div>
+        <div class="form-group">
+          <input type="text" name="id" class="form-input" data-i18n="contact_id" placeholder="Your Player ID">
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" class="form-input" data-i18n="contact_email" placeholder="Your Email" required>
+        </div>
+        <div class="form-group">
+          <textarea name="message" class="form-input form-textarea" data-i18n="contact_message" placeholder="Your Message" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit" data-i18n="contact_send">Send Message</button>
+      </form>
+      <div class="contact-success" id="contactSuccess" style="display:none">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h3 data-i18n="contact_thanks_title">Thank You!</h3>
+        <p data-i18n="contact_thanks_text">We have received your message. We will reply to you shortly.</p>
+        <button class="btn-submit" onclick="resetContactForm()" data-i18n="contact_send_another">Send Another Message</button>
+      </div>
+    </div>
+
     <div class="cta-section reveal">
       <h2 data-i18n="ready_title">Ready to Hide or Seek?</h2>
       <p data-i18n="ready_desc">Join millions of players and start your adventure today!</p>
@@ -420,7 +449,7 @@
         <ul class="footer-links">
           <li><a href="privacy-policy.html" data-i18n="privacy">Privacy Policy</a></li>
           <li><a href="hide-terms-conditions.html" data-i18n="terms">Terms & Conditions</a></li>
-          <li><a href="https://hide.freshdesk.com/support/home" target="_blank" data-i18n="support">Support</a></li>
+          <li><a href="#contact" data-i18n="support">Support</a></li>
         </ul>
       </div>
       <div class="footer-column">
@@ -460,12 +489,5 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
-  <script> 
- 	window.fwSettings={ 
- 	'widget_id':70000001011 
- 	}; 
- 	!function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()  
- </script> 
- <script type='text/javascript' src='https://widget.freshworks.com/widgets/70000001011.js' async defer></script>
 </body>
 </html>

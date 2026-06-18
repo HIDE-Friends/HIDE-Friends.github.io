@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Social Links Data
   const socialData = [
-    { id: 'discord', icon: 'fab fa-discord', url: 'https://discord.gg/Gp9cfwhq', titleKey: 'discord' },
+    { id: 'discord', icon: 'fab fa-discord', url: 'https://discord.gg/6VrpRzaRSy', titleKey: 'discord' },
     { id: 'telegram', icon: 'fab fa-telegram', url: 'https://t.me/hidehelp', titleKey: 'telegram' },
     { id: 'vk', icon: 'fab fa-vk', url: 'https://vk.com/hideandseekgame', titleKey: 'vk' },
-    { id: 'support', icon: 'fas fa-envelope', url: 'https://hide.freshdesk.com/support/home', titleKey: 'support' }
+    { id: 'support', icon: 'fas fa-envelope', url: '#contact', titleKey: 'support' }
   ];
 
   // Populate Social Links
@@ -15,25 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const activeSocials = socialData.filter(s => s.url && s.url !== '#');
 
+    function linkHtml(s, extraClass) {
+      const target = s.url.startsWith('#') ? '' : ' target="_blank"';
+      const cls = extraClass ? ` class="${extraClass}"` : '';
+      return `<a href="${s.url}"${target}${cls} data-i18n-title="${s.titleKey}"><i class="${s.icon}"></i></a>`;
+    }
+
     if (floatingBar) {
-      floatingBar.innerHTML = activeSocials
-        .map(s => `<a href="${s.url}" target="_blank" data-i18n-title="${s.titleKey}"><i class="${s.icon}"></i></a>`)
-        .join('');
+      floatingBar.innerHTML = activeSocials.map(s => linkHtml(s)).join('');
     }
 
     if (headerLinks) {
-      headerLinks.innerHTML = activeSocials
-        .map(s => `
-          <a href="${s.url}" target="_blank" class="btn btn-${s.id}" data-i18n-title="${s.titleKey}">
-            <i class="${s.icon}"></i>
-          </a>
-        `).join('');
+      headerLinks.innerHTML = activeSocials.map(s => linkHtml(s, `btn btn-${s.id}`)).join('');
     }
 
     if (footerLinks) {
-      footerLinks.innerHTML = activeSocials
-        .map(s => `<a href="${s.url}" target="_blank" class="social-icon" data-i18n-title="${s.titleKey}"><i class="${s.icon}"></i></a>`)
-        .join('');
+      footerLinks.innerHTML = activeSocials.map(s => linkHtml(s, 'social-icon')).join('');
     }
 
     if (window.updateLanguage) {
@@ -407,21 +404,36 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('click', (e) => { if (e.target === modal) closeBtn.click(); });
   }
 
-  window.checkServerStatus = async function() {
+  window.checkServerStatus = function() {
     const statusText = document.getElementById('serverStatusText');
     if (!statusText) return;
-    try {
-      await fetch('https://prophunt.avegagames.com/ping', { mode: 'no-cors' });
-      statusText.textContent = (window.translations && window.translations.online) ? (window.translations.online[localStorage.getItem('lang')] || window.translations.online.en) : 'Online';
-      statusText.style.color = '#10b981';
-      const dot = statusText.parentElement.querySelector('.status-dot');
-      if (dot) { dot.style.background = '#10b981'; dot.style.boxShadow = '0 0 8px #10b981'; }
-    } catch {
-      statusText.textContent = (window.translations && window.translations.offline) ? (window.translations.offline[localStorage.getItem('lang')] || window.translations.offline.en) : 'Offline';
-      statusText.style.color = '#ef4444';
-      const dot = statusText.parentElement.querySelector('.status-dot');
-      if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 8px #ef4444'; }
-    }
+    statusText.textContent = (window.translations && window.translations.online) ? (window.translations.online[localStorage.getItem('lang')] || window.translations.online.en) : 'Online';
+    statusText.style.color = '#10b981';
+    const dot = statusText.parentElement.querySelector('.status-dot');
+    if (dot) { dot.style.background = '#10b981'; dot.style.boxShadow = '0 0 8px #10b981'; }
   };
   checkServerStatus();
+
+  // Contact Form
+  const contactForm = document.getElementById('contactForm');
+  const successDiv = document.getElementById('contactSuccess');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!contactForm.checkValidity()) return;
+      const idField = contactForm.querySelector('[name="id"]');
+      const subjectField = document.getElementById('subjectField');
+      const idVal = idField ? idField.value.trim() : '';
+      subjectField.value = 'Hide Support Form' + (idVal ? ' + ' + idVal : '');
+      const data = new FormData(contactForm);
+      fetch(contactForm.action, { method: 'POST', body: data, mode: 'no-cors' })
+        .then(() => { contactForm.style.display = 'none'; successDiv.style.display = ''; })
+        .catch(() => { contactForm.style.display = 'none'; successDiv.style.display = ''; });
+    });
+  }
+  window.resetContactForm = function() {
+    successDiv.style.display = 'none';
+    contactForm.style.display = '';
+    contactForm.reset();
+  };
 });

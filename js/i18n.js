@@ -289,6 +289,46 @@ window.translations = {
   go_to_top: {
     en: "Go to top",
     ru: "Наверх"
+  },
+  contact_title: {
+    en: "Contact Us",
+    ru: "Связаться с нами"
+  },
+  contact_name: {
+    en: "Your Name",
+    ru: "Ваше имя"
+  },
+  contact_nickname: {
+    en: "Your Nickname",
+    ru: "Ваш ник"
+  },
+  contact_id: {
+    en: "Your Player ID",
+    ru: "Ваш ID"
+  },
+  contact_email: {
+    en: "Your Email",
+    ru: "Ваш Email"
+  },
+  contact_message: {
+    en: "Your Message",
+    ru: "Ваше сообщение"
+  },
+  contact_send: {
+    en: "Send Message",
+    ru: "Отправить"
+  },
+  contact_thanks_title: {
+    en: "Thank You!",
+    ru: "Спасибо!"
+  },
+  contact_thanks_text: {
+    en: "We have received your message. We will reply to you shortly.",
+    ru: "Мы получили ваше сообщение. Скоро мы вам ответим."
+  },
+  contact_send_another: {
+    en: "Send Another Message",
+    ru: "Отправить ещё письмо"
   }
 };
 
@@ -314,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const translation = window.translations[key];
       if (translation) {
         const text = typeof translation === 'string' ? translation : (translation[lang] || translation['en']);
-        if (el.tagName === 'INPUT') {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
           el.placeholder = text;
         } else {
           el.textContent = text;
