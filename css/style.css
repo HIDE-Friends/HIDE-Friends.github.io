@@ -1523,6 +1523,10 @@ footer {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+.modal.active {
+  display: flex;
+}
+
 .modal.closing {
   animation: fadeOut 0.3s ease-in forwards;
 }
