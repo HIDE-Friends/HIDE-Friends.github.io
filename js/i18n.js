@@ -329,6 +329,76 @@ window.translations = {
   contact_send_another: {
     en: "Send Another Message",
     ru: "Отправить ещё письмо"
+  },
+
+  // Wiki / GitBook
+  wiki_title: {
+    en: "Wiki & Guides",
+    ru: "Вики и гайды"
+  },
+  wiki_subtitle: {
+    en: "Weapons, maps, perks and rules — explained in the official H.I.D.E. wiki.",
+    ru: "Оружие, карты, перки и правила — в официальной вики H.I.D.E."
+  },
+  wiki_weapons: {
+    en: "Weapons",
+    ru: "Оружие"
+  },
+  wiki_weapons_desc: {
+    en: "Damage, reload speed and tips for every gun.",
+    ru: "Урон, перезарядка и советы по каждому оружию."
+  },
+  wiki_maps: {
+    en: "Maps",
+    ru: "Карты"
+  },
+  wiki_maps_desc: {
+    en: "All maps and the best hiding spots on them.",
+    ru: "Все карты и лучшие места для пряток."
+  },
+  wiki_perks: {
+    en: "Perks",
+    ru: "Перки"
+  },
+  wiki_perks_desc: {
+    en: "Active and passive perks for Props and Hunters.",
+    ru: "Активные и пассивные перки для предметов и охотников."
+  },
+  wiki_modes: {
+    en: "Game Modes",
+    ru: "Режимы игры"
+  },
+  wiki_modes_desc: {
+    en: "Prop Hunt and Rebellion — rules and differences.",
+    ru: "Prop Hunt и Rebellion — правила и отличия."
+  },
+  wiki_whistles: {
+    en: "Whistles",
+    ru: "Свистки"
+  },
+  wiki_whistles_desc: {
+    en: "72 whistles to taunt your opponents.",
+    ru: "72 свистка, чтобы дразнить соперников."
+  },
+  wiki_progression: {
+    en: "Progression",
+    ru: "Прогресс"
+  },
+  wiki_progression_desc: {
+    en: "XP, leagues and achievements.",
+    ru: "Опыт, лиги и достижения."
+  },
+  wiki_open: {
+    en: "Open the full wiki",
+    ru: "Открыть всю вики"
+  },
+  wiki_ask: {
+    en: "Ask about the game",
+    ru: "Спросить об игре"
+  },
+  wiki_ask_title: {
+    en: "Open the H.I.D.E. wiki assistant",
+    ru: "Открыть помощника по вики H.I.D.E."
   }
 };
 
