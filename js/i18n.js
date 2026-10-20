@@ -442,6 +442,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Language-aware links: data-href-en / data-href-ru
+    document.querySelectorAll('[data-href-en], [data-href-ru]').forEach(el => {
+      const href = el.getAttribute('data-href-' + lang) || el.getAttribute('data-href-en');
+      if (href) el.setAttribute('href', href);
+    });
+
     langBtns.forEach(btn => {
       btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
     });

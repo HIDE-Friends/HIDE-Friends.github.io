@@ -516,7 +516,12 @@ document.addEventListener('DOMContentLoaded', () => {
       loadGitBook(function() {
         // Give the embed a tick to mount before opening it.
         setTimeout(function() {
-          if (typeof window.GitBook === 'function') window.GitBook('open');
+          if (typeof window.GitBook !== 'function') return;
+          window.GitBook('open');
+          // Open the embed on the language variant the visitor is reading.
+          if ((localStorage.getItem('lang') || 'en') === 'ru') {
+            try { window.GitBook('navigateToPage', '/ru/'); } catch (e) { /* optional */ }
+          }
         }, 100);
       });
     });
