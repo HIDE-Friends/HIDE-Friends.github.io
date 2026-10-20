@@ -388,17 +388,17 @@ window.translations = {
     en: "XP, leagues and achievements.",
     ru: "Опыт, лиги и достижения."
   },
-  wiki_open: {
-    en: "Open the full wiki",
-    ru: "Открыть всю вики"
+  wiki_panel: {
+    en: "Open the wiki",
+    ru: "Открыть вики"
   },
-  wiki_ask: {
-    en: "Ask about the game",
-    ru: "Спросить об игре"
+  wiki_panel_title: {
+    en: "Browse the wiki right on this page",
+    ru: "Просмотреть вики прямо на этой странице"
   },
-  wiki_ask_title: {
-    en: "Open the H.I.D.E. wiki assistant",
-    ru: "Открыть помощника по вики H.I.D.E."
+  wiki_new_tab: {
+    en: "Open in a new tab",
+    ru: "Открыть в новой вкладке"
   }
 };
 

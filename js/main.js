@@ -443,48 +443,39 @@ document.addEventListener('DOMContentLoaded', () => {
   let gitbookReady = false;
   let gitbookQueue = [];
 
-  function wikiColorScheme() {
-    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  function wikiLang() {
+    return localStorage.getItem('lang') === 'ru' ? 'ru' : 'en';
   }
 
-  function wikiFrame() {
-    return document.querySelector('iframe[src*="gitbook"]');
+  // Root page of the language variant the visitor is reading.
+  function wikiHomePath() {
+    return wikiLang() === 'ru' ? '/ru/h.i.d.e.' : '/h.i.d.e.';
+  }
+
+  function openWikiPanel() {
+    if (typeof window.GitBook !== 'function') return;
+    window.GitBook('open');
+    // The embed always starts on the English root, so move it to the
+    // language variant that matches the site. Falls back silently.
+    try { window.GitBook('navigateToPage', wikiHomePath()); } catch (e) { /* optional */ }
   }
 
   function initGitBook() {
     if (gitbookReady || typeof window.GitBook !== 'function') return;
     gitbookReady = true;
-    window.GitBook('init', { siteURL: WIKI_BASE }, { colorScheme: wikiColorScheme() });
+    // The embed script calls init itself with a hardcoded dark scheme,
+    // so unload first to let ours take effect.
+    try { window.GitBook('unload'); } catch (e) { /* nothing to unload yet */ }
+    window.GitBook('init', { siteURL: WIKI_BASE });
     window.GitBook('configure', {
       button: { label: 'Wiki', icon: 'book' },
-      tabs: ['assistant', 'search', 'docs']
+      // This GitBook site has no Assistant tab, only Search and Docs.
+      tabs: ['search', 'docs']
     });
     window.GitBook('show');
-    // The first init right after the script loads can fall back to the OS
-    // scheme, so double-check once the embed has settled.
-    setTimeout(syncWikiTheme, 2500);
     const queued = gitbookQueue;
     gitbookQueue = [];
     queued.forEach(fn => fn());
-  }
-
-  function syncWikiTheme() {
-    if (!gitbookReady || typeof window.GitBook !== 'function') return;
-    const frame = wikiFrame();
-    const wanted = wikiColorScheme();
-    // Only a closed, wrongly themed embed gets a restart.
-    if (!frame || frame.clientHeight > 0) return;
-    if (frame.src.indexOf('theme=' + wanted) !== -1) return;
-    window.GitBook('unload');
-    gitbookReady = false;
-    initGitBook();
-  }
-
-  function reloadGitBook() {
-    if (!gitbookReady || typeof window.GitBook !== 'function') return;
-    window.GitBook('unload');
-    gitbookReady = false;
-    setTimeout(initGitBook, 150);
   }
 
   function loadGitBook(callback) {
@@ -510,27 +501,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.head.appendChild(script);
   }
 
-  const wikiAskBtn = document.getElementById('wikiAskBtn');
-  if (wikiAskBtn) {
-    wikiAskBtn.addEventListener('click', function() {
+  const wikiPanelBtn = document.getElementById('wikiPanelBtn');
+  if (wikiPanelBtn) {
+    wikiPanelBtn.addEventListener('click', function() {
       loadGitBook(function() {
         // Give the embed a tick to mount before opening it.
-        setTimeout(function() {
-          if (typeof window.GitBook !== 'function') return;
-          window.GitBook('open');
-          // Open the embed on the language variant the visitor is reading.
-          if ((localStorage.getItem('lang') || 'en') === 'ru') {
-            try { window.GitBook('navigateToPage', '/ru/'); } catch (e) { /* optional */ }
-          }
-        }, 100);
+        setTimeout(openWikiPanel, 100);
       });
     });
-  }
-
-  // Keep the embed in sync with the site theme (init only accepts a fixed scheme).
-  const wikiThemeToggle = document.getElementById('themeToggle');
-  if (wikiThemeToggle) {
-    wikiThemeToggle.addEventListener('click', reloadGitBook);
   }
 
   // Warm up the widget when the browser is idle so it never blocks first paint.

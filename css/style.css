@@ -38,7 +38,7 @@ body {
   --grid-color: #e2e8f0;
   --header-bg-rgb: 255, 255, 255;
   --section-spacing: 6rem; /* Standard vertical spacing between sections */
-  color-scheme: light; /* Also drives the GitBook embed theme */
+  color-scheme: light; /* Native scrollbars/controls follow the site theme */
 }
 
 [data-theme="dark"] {
