@@ -534,20 +534,20 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', positionSectionNav);
 
     const sectionMap = [
-      { sel: '.carousel', key: 'ind_home', target: '.carousel' },
+      { sel: '.carousel', key: 'ind_home', target: '.carousel', home: true },
       { sel: '#about', key: 'ind_about', target: '#about' },
-      { sel: '.features-ticker-container', key: 'ind_features', target: '.features-ticker-container' },
+      { sel: '.features-ticker-container', key: 'ind_features', target: '#features-title' },
       { sel: '.stats-section', key: 'ind_stats', target: '.stats-section' },
-      { sel: '.community-section', key: 'ind_community', target: '.community-section' },
-      { sel: '.wiki-section', key: 'ind_wiki', target: '.wiki-section' },
-      { sel: '.reviews-ticker-container', key: 'ind_reviews', target: '.reviews-ticker-container' },
-      { sel: '.faq-section', key: 'ind_faq', target: '.faq-section' },
-      { sel: '.contact-section', key: 'ind_contact', target: '.contact-section' },
-      { sel: '#download', key: 'ind_download', target: '#download' }
+      { sel: '.community-section', key: 'ind_community', target: '#community-title' },
+      { sel: '.wiki-section', key: 'ind_wiki', target: '#wiki-title' },
+      { sel: '.reviews-ticker-container', key: 'ind_reviews', target: '#reviews-title' },
+      { sel: '.faq-section', key: 'ind_faq', target: '#faq' },
+      { sel: '.contact-section', key: 'ind_contact', target: '#contact' },
+      { sel: '#download', key: 'ind_download', target: '#download-title' }
     ];
     const tracked = sectionMap.map(function(item) {
       const el = document.querySelector(item.sel);
-      return el ? { el: el, key: item.key, target: item.target } : null;
+      return el ? { el: el, key: item.key, target: item.target, home: !!item.home } : null;
     }).filter(Boolean);
 
     const navItems = Array.from(sectionNav.querySelectorAll('.section-nav-item'));
@@ -573,6 +573,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!a) return;
       a.addEventListener('click', function(e) {
         e.preventDefault();
+        const item = tracked.find(function(t) { return t.key === li.getAttribute('data-section'); });
+        // Home: scroll to the very top so the expanded header is visible.
+        if (item && item.home) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
         const targetSel = li.getAttribute('data-target');
         const targetEl = targetSel ? document.querySelector(targetSel) : null;
         if (targetEl) {
