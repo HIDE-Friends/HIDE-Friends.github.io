@@ -576,7 +576,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetSel = li.getAttribute('data-target');
         const targetEl = targetSel ? document.querySelector(targetSel) : null;
         if (targetEl) {
-          const top = targetEl.getBoundingClientRect().top + window.pageYOffset - 90;
+          const headerH = (document.querySelector('header') || {}).offsetHeight || 90;
+          const top = targetEl.getBoundingClientRect().top + window.pageYOffset - (headerH + 12);
           window.scrollTo({ top: top, behavior: 'smooth' });
         }
       });
