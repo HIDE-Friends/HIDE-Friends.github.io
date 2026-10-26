@@ -436,4 +436,177 @@ document.addEventListener('DOMContentLoaded', () => {
     contactForm.style.display = '';
     contactForm.reset();
   };
+
+  // --- GitBook wiki widget (loaded lazily) ---
+  const WIKI_BASE = 'https://handgames.gitbook.io/hide';
+  let gitbookLoading = false;
+  let gitbookReady = false;
+  let gitbookQueue = [];
+
+  function wikiLang() {
+    return localStorage.getItem('lang') === 'ru' ? 'ru' : 'en';
+  }
+
+  // Root page of the language variant the visitor is reading.
+  function wikiHomePath() {
+    return wikiLang() === 'ru' ? '/ru/h.i.d.e.' : '/h.i.d.e.';
+  }
+
+  function openWikiPanel() {
+    if (typeof window.GitBook !== 'function') return;
+    window.GitBook('open');
+    // The embed always starts on the English root, so move it to the
+    // language variant that matches the site. Falls back silently.
+    try { window.GitBook('navigateToPage', wikiHomePath()); } catch (e) { /* optional */ }
+  }
+
+  function initGitBook() {
+    if (gitbookReady || typeof window.GitBook !== 'function') return;
+    gitbookReady = true;
+    // The embed script calls init itself with a hardcoded dark scheme,
+    // so unload first to let ours take effect.
+    try { window.GitBook('unload'); } catch (e) { /* nothing to unload yet */ }
+    window.GitBook('init', { siteURL: WIKI_BASE });
+    window.GitBook('configure', {
+      button: { label: 'Wiki', icon: 'book' },
+      // This GitBook site has no Assistant tab, only Search and Docs.
+      tabs: ['search', 'docs']
+    });
+    window.GitBook('show');
+    const queued = gitbookQueue;
+    gitbookQueue = [];
+    queued.forEach(fn => fn());
+  }
+
+  function loadGitBook(callback) {
+    if (callback) {
+      if (gitbookReady) {
+        callback();
+        return;
+      }
+      gitbookQueue.push(callback);
+    }
+    if (gitbookLoading || gitbookReady) return;
+    gitbookLoading = true;
+    const script = document.createElement('script');
+    script.src = WIKI_BASE + '/~gitbook/embed/script.js';
+    script.async = true;
+    // GitBook ignores frame options passed immediately inside onload,
+    // so give the embed a tick before initializing it.
+    script.onload = function() { setTimeout(initGitBook, 150); };
+    script.onerror = function() {
+      gitbookLoading = false;
+      gitbookQueue = [];
+    };
+    document.head.appendChild(script);
+  }
+
+  const wikiPanelBtn = document.getElementById('wikiPanelBtn');
+  if (wikiPanelBtn) {
+    wikiPanelBtn.addEventListener('click', function() {
+      loadGitBook(function() {
+        // Give the embed a tick to mount before opening it.
+        setTimeout(openWikiPanel, 100);
+      });
+    });
+  }
+
+  // Warm up the widget when the browser is idle so it never blocks first paint.
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(function() { loadGitBook(); }, { timeout: 5000 });
+  } else {
+    window.addEventListener('load', function() {
+      setTimeout(function() { loadGitBook(); }, 2000);
+    });
+  }
+
+  // --- Section nav (corner list with active highlight) ---
+  const sectionNav = document.getElementById('sectionNav');
+  if (sectionNav) {
+    // Keep the nav below the (fixed, height-changing) header.
+    // Threshold-based: expanded header needs ~240px, collapsed ~72px.
+    // CSS transition on `top` keeps it in sync with the header's animation.
+    function positionSectionNav() {
+      sectionNav.style.top = (window.scrollY > 40 ? 72 : 240) + 'px';
+    }
+    positionSectionNav();
+    window.addEventListener('scroll', positionSectionNav, { passive: true });
+    window.addEventListener('resize', positionSectionNav);
+
+    const sectionMap = [
+      { sel: '.carousel', key: 'ind_home', target: '.carousel' },
+      { sel: '#about', key: 'ind_about', target: '#about' },
+      { sel: '.features-ticker-container', key: 'ind_features', target: '.features-ticker-container' },
+      { sel: '.stats-section', key: 'ind_stats', target: '.stats-section' },
+      { sel: '.community-section', key: 'ind_community', target: '.community-section' },
+      { sel: '.wiki-section', key: 'ind_wiki', target: '.wiki-section' },
+      { sel: '.reviews-ticker-container', key: 'ind_reviews', target: '.reviews-ticker-container' },
+      { sel: '.faq-section', key: 'ind_faq', target: '.faq-section' },
+      { sel: '.contact-section', key: 'ind_contact', target: '.contact-section' },
+      { sel: '#download', key: 'ind_download', target: '#download' }
+    ];
+    const tracked = sectionMap.map(function(item) {
+      const el = document.querySelector(item.sel);
+      return el ? { el: el, key: item.key, target: item.target } : null;
+    }).filter(Boolean);
+
+    const navItems = Array.from(sectionNav.querySelectorAll('.section-nav-item'));
+    const itemByKey = {};
+    navItems.forEach(function(li) {
+      itemByKey[li.getAttribute('data-section')] = li;
+    });
+
+    const visible = new Map();
+    let currentKey = null;
+
+    function setActiveKey(key) {
+      if (key === currentKey) return;
+      currentKey = key;
+      navItems.forEach(function(li) {
+        li.classList.toggle('active', li.getAttribute('data-section') === key);
+      });
+    }
+
+    // Click-to-scroll (smooth) with offset for the fixed header.
+    navItems.forEach(function(li) {
+      const a = li.querySelector('a');
+      if (!a) return;
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetSel = li.getAttribute('data-target');
+        const targetEl = targetSel ? document.querySelector(targetSel) : null;
+        if (targetEl) {
+          const top = targetEl.getBoundingClientRect().top + window.pageYOffset - 90;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    if ('IntersectionObserver' in window && tracked.length) {
+      const io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) visible.set(e.target, e.intersectionRatio);
+          else visible.delete(e.target);
+        });
+        if (visible.size === 0) return;
+        var best = null, bestScore = Infinity;
+        tracked.forEach(function(item) {
+          if (!visible.has(item.el)) return;
+          var r = item.el.getBoundingClientRect();
+          var center = r.top + r.height / 2;
+          var score = Math.abs(center - window.innerHeight * 0.35);
+          if (score < bestScore) { bestScore = score; best = item; }
+        });
+        if (best) setActiveKey(best.key);
+      }, { threshold: [0, 0.1, 0.25, 0.5], rootMargin: '-90px 0px -40% 0px' });
+
+      tracked.forEach(function(item) { io.observe(item.el); });
+
+      setTimeout(function() {
+        if (!currentKey) setActiveKey('ind_home');
+      }, 800);
+    } else {
+      setActiveKey('ind_home');
+    }
+  }
 });

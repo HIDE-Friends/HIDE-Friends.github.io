@@ -1,7 +1,6 @@
 window.translations = {
   // Shared (same for all languages)
   review_name1: "Blu2820",
-  review_name2: "INVICTUS",
   review_name3: "DEVELOPER",
   review_name4: "XD",
   review_name5: "GlitchGuy",
@@ -121,10 +120,6 @@ window.translations = {
   review_text1: {
     en: '"Basically, the game is 5 out of 5. Of course, beginners will have to guard the low tab because of the mops, but you just need to get a grenade and a weapon and you\'ll have a chance. But it\'s also fun to grind XP with friends without the developer knowing using the Medic perk. I recommend this game to everyone (die to a mop with the nickname INVICTUS)."',
     ru: '"В целом игра на 5 из 5. Конечно, новичкам придется попотеть в начале из-за мобов, но вам просто нужно раздобыть гранату и оружие, и у вас появится шанс. Но также весело фармить опыт с друзьями, используя перк Медик. Рекомендую эту игру всем (умрите от моба с ником INVICTUS)."'
-  },
-  review_text2: {
-    en: '"Hunters vs Props is a fast-paced, creative, and incredibly fun game of hide-and-seek. With simple rules, dynamic maps, and hilarious moments, it offers great replayability, and now you can add friends."',
-    ru: '"Hunters vs Props — это динамичная, креативная и невероятно веселая игра в прятки. Благодаря простым правилам, динамичным картам и забавным моментам, в нее хочется играть снова и снова, а теперь можно еще и добавлять друзей."'
   },
   review_text3: {
     en: '"Best game, there is much that can still be improved, but players like it. We ban cheaters."',
@@ -329,6 +324,118 @@ window.translations = {
   contact_send_another: {
     en: "Send Another Message",
     ru: "Отправить ещё письмо"
+  },
+
+  // Wiki / GitBook
+  wiki_title: {
+    en: "Wiki & Guides",
+    ru: "Вики и гайды"
+  },
+  wiki_subtitle: {
+    en: "Weapons, maps, perks and rules — explained in the official H.I.D.E. wiki.",
+    ru: "Оружие, карты, перки и правила — в официальной вики H.I.D.E."
+  },
+  wiki_weapons: {
+    en: "Weapons",
+    ru: "Оружие"
+  },
+  wiki_weapons_desc: {
+    en: "Damage, reload speed and tips for every gun.",
+    ru: "Урон, перезарядка и советы по каждому оружию."
+  },
+  wiki_maps: {
+    en: "Maps",
+    ru: "Карты"
+  },
+  wiki_maps_desc: {
+    en: "All maps and the best hiding spots on them.",
+    ru: "Все карты и лучшие места для пряток."
+  },
+  wiki_perks: {
+    en: "Perks",
+    ru: "Перки"
+  },
+  wiki_perks_desc: {
+    en: "Active and passive perks for Props and Hunters.",
+    ru: "Активные и пассивные перки для предметов и охотников."
+  },
+  wiki_modes: {
+    en: "Game Modes",
+    ru: "Режимы игры"
+  },
+  wiki_modes_desc: {
+    en: "Prop Hunt and Rebellion — rules and differences.",
+    ru: "Prop Hunt и Rebellion — правила и отличия."
+  },
+  wiki_whistles: {
+    en: "Whistles",
+    ru: "Свистки"
+  },
+  wiki_whistles_desc: {
+    en: "72 whistles to taunt your opponents.",
+    ru: "72 свистка, чтобы дразнить соперников."
+  },
+  wiki_progression: {
+    en: "Progression",
+    ru: "Прогресс"
+  },
+  wiki_progression_desc: {
+    en: "XP, leagues and achievements.",
+    ru: "Опыт, лиги и достижения."
+  },
+  wiki_panel: {
+    en: "Open the wiki",
+    ru: "Открыть вики"
+  },
+  wiki_panel_title: {
+    en: "Browse the wiki right on this page",
+    ru: "Просмотреть вики прямо на этой странице"
+  },
+  wiki_new_tab: {
+    en: "Open in a new tab",
+    ru: "Открыть в новой вкладке"
+  },
+
+  // Section indicator (corner badge)
+  ind_home: {
+    en: "Home",
+    ru: "Главная"
+  },
+  ind_about: {
+    en: "About",
+    ru: "Об игре"
+  },
+  ind_features: {
+    en: "Features",
+    ru: "Особенности"
+  },
+  ind_stats: {
+    en: "Stats",
+    ru: "Статистика"
+  },
+  ind_community: {
+    en: "Community",
+    ru: "Сообщество"
+  },
+  ind_wiki: {
+    en: "Wiki",
+    ru: "Вики"
+  },
+  ind_reviews: {
+    en: "Reviews",
+    ru: "Отзывы"
+  },
+  ind_faq: {
+    en: "FAQ",
+    ru: "FAQ"
+  },
+  ind_contact: {
+    en: "Contact",
+    ru: "Контакты"
+  },
+  ind_download: {
+    en: "Download",
+    ru: "Скачать"
   }
 };
 
@@ -370,6 +477,12 @@ document.addEventListener('DOMContentLoaded', () => {
         el.title = text;
         el.setAttribute('aria-label', text);
       }
+    });
+
+    // Language-aware links: data-href-en / data-href-ru
+    document.querySelectorAll('[data-href-en], [data-href-ru]').forEach(el => {
+      const href = el.getAttribute('data-href-' + lang) || el.getAttribute('data-href-en');
+      if (href) el.setAttribute('href', href);
     });
 
     langBtns.forEach(btn => {
