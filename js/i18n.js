@@ -4,6 +4,7 @@ window.translations = {
   review_name3: "DEVELOPER",
   review_name4: "XD",
   review_name5: "GlitchGuy",
+  review_name6: "box",
   game_name: "H.I.D.E.",
   discord: "Discord",
   telegram: "Telegram",
@@ -132,6 +133,10 @@ window.translations = {
   review_text5: {
     en: '"It\'s good"',
     ru: '"Это хорошо"'
+  },
+  review_text6: {
+    en: '"I really liked this game because you can have a lot of fun here, hiding as different objects and searching for other players. The idea of turning into props is very interesting and unusual, which makes every match exciting in its own way! You never know where other players will hide and whether you\'ll be able to find them all. You need to be attentive, use cunning and come up with different tactics to win."',
+    ru: '"Мне очень понравилась эта игра, потому что здесь можно весело проводить время, прятаться в виде разных предметов и искать других игроков. Идея с превращением в предметы очень интересная и необычная, благодаря чему каждый матч получается по-своему увлекательным! Никогда не знаешь, где спрячутся другие игроки и сможешь ли ты найти их всех. Нужно быть внимательным, использовать хитрость и придумывать разные тактики, чтобы победить."'
   },
   faq_title: {
     en: "Frequently Asked Questions",
