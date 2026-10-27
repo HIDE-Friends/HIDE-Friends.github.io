@@ -422,9 +422,12 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       if (!contactForm.checkValidity()) return;
       const idField = contactForm.querySelector('[name="id"]');
+      const reasonField = contactForm.querySelector('[name="reason"]');
       const subjectField = document.getElementById('subjectField');
       const idVal = idField ? idField.value.trim() : '';
-      subjectField.value = 'Hide Support Form' + (idVal ? ' + ' + idVal : '');
+      const reasonVal = reasonField ? reasonField.value : '';
+      const ticketId = Date.now().toString(36).toUpperCase();
+      subjectField.value = 'Hide Support Form' + (reasonVal ? ' [' + reasonVal + ']' : '') + (idVal ? ' + ' + idVal : '') + ' + #' + ticketId;
       const data = new FormData(contactForm);
       fetch(contactForm.action, { method: 'POST', body: data, mode: 'no-cors' })
         .then(() => { contactForm.style.display = 'none'; successDiv.style.display = ''; })

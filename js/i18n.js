@@ -294,6 +294,26 @@ window.translations = {
     en: "Contact Us",
     ru: "Связаться с нами"
   },
+  contact_reason: {
+    en: "Reason for contact",
+    ru: "Причина обращения"
+  },
+  reason_billing: {
+    en: "Billing",
+    ru: "Оплата"
+  },
+  reason_account: {
+    en: "Account",
+    ru: "Аккаунт"
+  },
+  reason_technical: {
+    en: "Technical problems",
+    ru: "Технические проблемы"
+  },
+  reason_wishes: {
+    en: "Wishes",
+    ru: "Пожелания"
+  },
   contact_name: {
     en: "Your Name",
     ru: "Ваше имя"
